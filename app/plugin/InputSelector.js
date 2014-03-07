@@ -45,7 +45,6 @@ Ext.define('Ux.plugin.InputSelector', {
 		var textarea = this.getTextarea(),
 			appendString = eOpts.appendString,
 			name = record.get('name');
-		console.debug("onListTap " + appendString );
 		if( Ext.isEmpty( appendString )){
 			textarea.setValue(name + this.getDelimiter());
 		} else{
@@ -61,7 +60,7 @@ Ext.define('Ux.plugin.InputSelector', {
 			value = textarea.getValue(),
 			lastDelim = value.lastIndexOf(this.getDelimiter());
 			appendString = null;
-		console.debug( "text value " + textarea.getValue());
+		//console.debug( "text value " + textarea.getValue());
 			
         if (textarea.getReadOnly()) {
             return;
@@ -75,7 +74,7 @@ Ext.define('Ux.plugin.InputSelector', {
 		}else if( lastDelim === -1 ){
 			filterString = value;
 		}
-		console.debug( "last Delim " + lastDelim + " filter " + filterString + " appendString " + appendString );
+		//console.debug( "last Delim " + lastDelim + " filter " + filterString + " appendString " + appendString );
 
 		if( !Ext.isEmpty( filterString )){
 			var store = this.getStore();
@@ -89,8 +88,8 @@ Ext.define('Ux.plugin.InputSelector', {
 				var listPanel = this.getOptionPicker(appendString);
 				if (!listPanel.getParent()) {
 					Ext.Viewport.add(listPanel);
-					listPanel.showBy(textarea, "tc-bc?");
 				}
+				listPanel.showBy(textarea, "tc-bc?");
 			} else{
 				if(this.getListPanel()){
 					this.getListPanel().destroy();
