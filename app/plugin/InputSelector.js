@@ -56,21 +56,18 @@ Ext.define('Ux.plugin.InputSelector', {
 			textarea.setValue(appendString + this.getDelimiter() + 
 				name + this.getDelimiter() );
 		}
+		// There is a bug with this on Mobile Safari
+		// http://stackoverflow.com/questions/2398528/set-textbox-focus-in-mobile-safari
+		textarea.focus();
 		list.up('panel').destroy();
 		this.setListpanel(null);
+		// remove the record so it can't be added again
 		this.getStore().remove(record);
+		// move the cursor to the end of the field
 		var el = document.getElementById(textarea.getId()),
 				textel = el.getElementsByTagName('textarea')[0],
 				length = textarea.getValue().length;
 		textel.setSelectionRange(length, length);
-		// something seems to be up with the safari browser and focus
-		// http://stackoverflow.com/questions/979309/how-do-i-focus-an-html-text-field-on-an-iphone-causing-the-keyboard-to-come-up
-		setTimeout(function(){
-			textarea.focus();
-			console.log('focus ', textarea);
-		}, 500);
-		textarea.focus();
-		console.log('focus ', textarea);
 	},
 	
 	onKeyup: function(e, eOps){
@@ -105,17 +102,17 @@ Ext.define('Ux.plugin.InputSelector', {
 				if (!listPanel.getParent()) {
 					Ext.Viewport.add(listPanel);
 				}
-				// depends on where cursor is
-				// right side
-				//listPanel.showBy(textarea, "bc-tr?");
 				listPanel.showBy(textarea);
-				// left side
-				//listPanel.showBy(textarea, "bc-tl?");
 			} else{
 				if(this.getListpanel()){
 					this.getListpanel().destroy();
 					this.setListpanel(null);
 				}
+			}
+		} else{
+			if(this.getListpanel()){
+				this.getListpanel().destroy();
+				this.setListpanel(null);
 			}
 		}
 	}
