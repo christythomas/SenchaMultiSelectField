@@ -17,6 +17,51 @@
     will need to resolve manually.
 */
 
+Ext.define('Ux.field.AutoHeightTextArea', { 
+    extend: 'Ext.field.TextArea',
+    xtype : 'textareafieldauto',
+    
+    constructor: function() {
+        this.callParent(arguments);
+
+        this.adjustHeight = Ext.Function.createBuffered(function(textarea) {
+			var textAreaEl = textarea.getComponent().input;
+			if (textAreaEl) {
+				textAreaEl.dom.style.height = 'auto';
+				textAreaEl.dom.style.height = textAreaEl.dom.scrollHeight + "px";
+			}
+        },200,this);
+
+        this.on({
+            scope: this,
+            keyup: function (textarea) {
+                textarea.adjustHeight(textarea);
+            },
+            change: function(textarea, newValue) {
+                textarea.adjustHeight(textarea);
+            },
+            painted: function(textarea) {
+				if(textarea.adjustHeight){
+					textarea.adjustHeight(textarea);
+				}
+            }
+        });
+		Ext.Viewport.on('orientationchange', 'handleOrientationChange', this, {buffer: 200});
+    },
+	
+	adjustHeight: function(textarea){
+	    var textAreaEl = textarea.getComponent().input;
+	    if (textAreaEl) {
+			textAreaEl.dom.style.height = 'auto';
+			textAreaEl.dom.style.height = textAreaEl.dom.scrollHeight + "px";
+		}
+	},
+	
+	handleOrientationChange: function() {
+		this.adjustHeight(this);
+	}
+});
+
 Ext.application({
     name: 'Ux',
 
@@ -70,7 +115,7 @@ Ext.application({
 			},{                    
 				name: 'Roy Hart'
 			},{                    
-				name: 'Bill Gates'
+				name: 'Bill Rugg'
 			},{                    
 				name: 'Marilyn Monroe'
 			},{                    
@@ -160,16 +205,33 @@ Ext.application({
 				type: 'vbox',
 				align: 'stretch'
 			},
+			scrollable: null,
 			items: [{
 				xtype: 'fieldset',
-				title: 'To: ',
+				title: 'New Message',
 				items: [{
-					xtype: 'textareafield',
+					xtype: 'textareafieldauto',
+					label: 'To:',
+					cls: 'textareafieldauto',
+					autoCapitalize: true,
+					maxRows: 1,
+					labelWidth: 0,
 					plugins: [{
 						xclass: 'Ux.plugin.InputSelector',
 						store: store,
 						delimiter: ', '
 					}]
+				},{
+					xtype: 'textfield',
+					labelWidth: 0,
+					label: 'From:',
+					placeHolder: 'Your Name'
+				},{
+					xtype: 'textfield',
+					labelWidth: 0,
+					label: 'Subject:'
+				},{
+					xtype: 'textareafield'
 				}]
 			}]
 		});

@@ -72,9 +72,13 @@
      */
     "css": [
         {
-            "path": "resources/css/app.css",
+            "path": "resources/css/cupertino.css",
             "update": "delta"
-        }
+        },{
+		    "path": "resources/css/ux.css",
+            "update": "delta"
+		}
+		
     ],
 
     /**

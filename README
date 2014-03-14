@@ -3,3 +3,19 @@ This is an example Sencha Touch application with plugin.
 In order to use this example you will need to place a touch directory into this directory.  
 
 I used Sencha Touch 2.3.1.
+
+This is a plugin for a text field that will popup a window with choices like you would see in the iPad email To field.
+
+Requirements:
+
+- dropdown with all the values sorted asc or desc
+- typeahead filter of the values in dropdown 
+- selecting an item removes the corresponding value in dropdown
+- selected values appear in the form separated by commas
+- the form field is expanded as needed if the list of selected values grows
+
+1. by default the text area should be one line and should expand by height if the values don't fit in one line - the values should wrap 
+2. prevent users from selecting the same contact many times (one way would be removing it from the list after selection) 
+3. focus issues (on the iPad) should be fixed 
+4. ability to type in a contact if it's not on the list 
+5. functionality should be tested on both desktop and iPad and should be production ready quality

@@ -1,4 +1,6 @@
-
+/**
+* Plugin to popup options when typing in a text area field. 
+*/
 Ext.define('Ux.plugin.InputSelector', {
     extend: 'Ext.Component',
     alias: 'plugin.inputselector',
@@ -7,36 +9,39 @@ Ext.define('Ux.plugin.InputSelector', {
 		store: null, 
 		delimiter: '; ',
 		textarea: null,
-		listPanel: null
+		listpanel: null
 	},
 	
 	init: function(textarea) {
 		this.setTextarea(textarea);
-		textarea.on('keyup', this.onKeyup, this);
+		textarea.getComponent().on('keyup', this.onKeyup, this);
     },
 	
 	getOptionPicker: function(appendString) {
-        var listPanel = this.getListPanel();
+        var listPanel = this.getListpanel();
 
         if (Ext.isEmpty(listPanel)) {
             listPanel = Ext.create('Ext.Panel', {
-                left: 0,
-                top: 0,
                 modal: true,
                 cls: Ext.baseCSSPrefix + 'select-overlay',
                 layout: 'fit',
                 hideOnMaskTap: true,
-                width: '18em',
-                height: '12em',
+                width: '12em',
+                height: '14.75em',
                 items: [{
+					xtype: 'toolbar',
+					title: this.getTextarea().getLabel(),
+					docked: 'top'
+				},{
                     xtype: 'list',
 					store: this.getStore(),
-                    itemTpl: '<span class="x-list-label">{name:htmlEncode}</span>'
+					itemTpl: '{name}'
                 }]
             });
 
-            listPanel.down('list').on('itemtap', this.onListTap, this, {"appendString": appendString});
-			this.setListPanel(listPanel);
+            listPanel.down('list').on('itemtap', this.onListTap, this,
+				{"appendString": appendString});
+			this.setListpanel(listPanel);
         }
         return listPanel;
     },
@@ -48,10 +53,24 @@ Ext.define('Ux.plugin.InputSelector', {
 		if( Ext.isEmpty( appendString )){
 			textarea.setValue(name + this.getDelimiter());
 		} else{
-			textarea.setValue(appendString + this.getDelimiter() + name + this.getDelimiter() );
+			textarea.setValue(appendString + this.getDelimiter() + 
+				name + this.getDelimiter() );
 		}
 		list.up('panel').destroy();
-		this.setListPanel(null);
+		this.setListpanel(null);
+		this.getStore().remove(record);
+		var el = document.getElementById(textarea.getId()),
+				textel = el.getElementsByTagName('textarea')[0],
+				length = textarea.getValue().length;
+		textel.setSelectionRange(length, length);
+		// something seems to be up with the safari browser and focus
+		// http://stackoverflow.com/questions/979309/how-do-i-focus-an-html-text-field-on-an-iphone-causing-the-keyboard-to-come-up
+		setTimeout(function(){
+			textarea.focus();
+			console.log('focus ', textarea);
+		}, 500);
+		textarea.focus();
+		console.log('focus ', textarea);
 	},
 	
 	onKeyup: function(e, eOps){
@@ -60,13 +79,11 @@ Ext.define('Ux.plugin.InputSelector', {
 			value = textarea.getValue(),
 			lastDelim = value.lastIndexOf(this.getDelimiter());
 			appendString = null;
-		//console.debug( "text value " + textarea.getValue());
 			
         if (textarea.getReadOnly()) {
             return;
         }
 
-        textarea.isFocused = true;
 		// obtain the part after the delimiter
 		if( lastDelim > 0 ){
 			filterString = value.substring( lastDelim+1 ).trim();
@@ -74,7 +91,6 @@ Ext.define('Ux.plugin.InputSelector', {
 		}else if( lastDelim === -1 ){
 			filterString = value;
 		}
-		//console.debug( "last Delim " + lastDelim + " filter " + filterString + " appendString " + appendString );
 
 		if( !Ext.isEmpty( filterString )){
 			var store = this.getStore();
@@ -89,11 +105,16 @@ Ext.define('Ux.plugin.InputSelector', {
 				if (!listPanel.getParent()) {
 					Ext.Viewport.add(listPanel);
 				}
-				listPanel.showBy(textarea, "tc-bc?");
+				// depends on where cursor is
+				// right side
+				//listPanel.showBy(textarea, "bc-tr?");
+				listPanel.showBy(textarea);
+				// left side
+				//listPanel.showBy(textarea, "bc-tl?");
 			} else{
-				if(this.getListPanel()){
-					this.getListPanel().destroy();
-					this.setListPanel(null);
+				if(this.getListpanel()){
+					this.getListpanel().destroy();
+					this.setListpanel(null);
 				}
 			}
 		}
