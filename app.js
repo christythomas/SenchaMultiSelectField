@@ -205,7 +205,7 @@ Ext.application({
 				type: 'vbox',
 				align: 'stretch'
 			},
-			scrollable: null,
+			//scrollable: null,
 			items: [{
 				xtype: 'fieldset',
 				title: 'New Message',
@@ -221,7 +221,7 @@ Ext.application({
 						store: store,
 						delimiter: ', '
 					}]
-				},{
+				}/* removing this to avoid bug with focus on iPad,{
 					xtype: 'textfield',
 					labelWidth: 0,
 					label: 'From:',
@@ -232,7 +232,7 @@ Ext.application({
 					label: 'Subject:'
 				},{
 					xtype: 'textareafield'
-				}]
+				}*/]
 			}]
 		});
         // Initialize the main view

@@ -74,7 +74,7 @@ Ext.define('Ux.plugin.InputSelector', {
 		var textarea = this.getTextarea(),
 			filterString = null,
 			value = textarea.getValue(),
-			lastDelim = value.lastIndexOf(this.getDelimiter());
+			lastDelim = value.lastIndexOf(this.getDelimiter().trim());
 			appendString = null;
 			
         if (textarea.getReadOnly()) {
